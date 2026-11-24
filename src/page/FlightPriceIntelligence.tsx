@@ -1057,25 +1057,28 @@ export default function FlightPriceIntelligence() {
                     disabled={isLoading || !origin.trim() || !destination.trim()}
                     className="fpi-btn fpi-btn-primary fpi-fetch-btn"
                   >
-                    {isLoading ? (
-                      <>
-                        <span className="fpi-spinner"></span> Extracting Fares...
-                      </>
-                    ) : (
-                      <>
-                        <FiRefreshCw style={{ marginRight: 6 }} /> Check Prices
-                      </>
-                    )}
+                    <span className="fpi-btn-inner">
+                      {isLoading ? (
+                        <span className="fpi-spinner" />
+                      ) : (
+                        <FiRefreshCw style={{ marginRight: 6 }} />
+                      )}
+                      <span>{isLoading ? "Extracting Fares..." : "Check Prices"}</span>
+                    </span>
                   </button>
                 </div>
               </div>
 
               {/* Extraction Loader State */}
               {isLoading && (
-                <div className="fpi-card fpi-loading-card">
+                <div key="loader-state" className="fpi-card fpi-loading-card">
                   <div className="fpi-loading-content">
                     <span className="fpi-large-spinner"></span>
-                    <h3>Extracting live airfares for {origin} → {destination}...</h3>
+                    <h3>
+                      <span>Extracting live airfares for </span>
+                      <strong>{origin} → {destination}</strong>
+                      <span>...</span>
+                    </h3>
                     <p>Connecting to flight data engine with proxy rotation & anti-bot bypass.</p>
                   </div>
                 </div>
@@ -1083,19 +1086,22 @@ export default function FlightPriceIntelligence() {
 
               {/* Empty Feedback State */}
               {!isLoading && hasSearched && flights.length === 0 && (
-                <div className="fpi-card fpi-empty-card">
+                <div key="empty-state" className="fpi-card fpi-empty-card">
                   <div className="fpi-empty-icon">✈️</div>
                   <h3>No Flight Records Found</h3>
                   <p>
-                    No active flights found for <strong>{origin} → {destination}</strong> on {formatDateIso(selectedDate)}.
-                    Please try another travel date or corridor (e.g. MAA → DXB, DEL → BOM, BLR → SIN).
+                    <span>No active flights found for </span>
+                    <strong>{origin} → {destination}</strong>
+                    <span> on {formatDateIso(selectedDate)}.</span>
+                    <br />
+                    <span>Please try another travel date or corridor (e.g. MAA → DXB, DEL → BOM, BLR → SIN).</span>
                   </p>
                 </div>
               )}
 
               {/* Steps 2-5 shown when flights are available */}
               {!isLoading && flights.length > 0 && (
-                <>
+                <div key="results-wrapper" className="fpi-results-wrapper">
                   {/* Step 2: Choose Your Flights */}
                   <div className="fpi-card">
                     <div className="fpi-card-step">
@@ -1515,7 +1521,7 @@ export default function FlightPriceIntelligence() {
                       )}
                     </div>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </div>

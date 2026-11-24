@@ -49,6 +49,7 @@ flightpriceintelligenceduplicate/
 │   │   └── FlightPriceIntelligence.css  # Full component styling (~2100 lines)
 │   ├── services/
 │   │   ├── apiConfig.ts                 # Base API config & fallback URL resolution
+│   │   ├── apiKey.ts                    # Dedicated API key storage & header manager
 │   │   └── flightApi.ts                 # Typed Axios client for Google Flights endpoint
 │   └── utils/
 │       └── airportApi.ts                # FreeAirportDB client & curated global hubs
@@ -95,14 +96,36 @@ npm run preview
 
 ---
 
-## ⚙️ Configuration & Environment Variables
+## ⚙️ Configuration & API Key Authentication
 
 By default, the application connects to the live production endpoint at `https://gcrawlai.com/gc/api/v1`.
 
-To customize the backend endpoint, create a `.env` file in the project root:
+### 1. API Key Header (`X-API-Key`)
+When requesting Google Flights fare intelligence, requests can be authenticated by passing an API key in the `X-API-Key` header:
+
+```bash
+curl -X POST https://gcrawlai.com/gc/api/v1/google-flights \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -d '{"origin":"MAA","destination":"DXB","outbound_date":"2026-12-04"}'
+```
+
+### 2. Dedicated API Key Storage (`src/services/apiKey.ts`)
+A dedicated file `src/services/apiKey.ts` stores and manages your API key:
+- **Direct in-code storage**: Simply enter your API key in `src/services/apiKey.ts`:
+  ```typescript
+  export const API_KEY: string = "YOUR_API_KEY";
+  ```
+  Save the file, and all requests will automatically include `-H "X-API-Key: YOUR_API_KEY"`.
+- **Environment variable fallback**: Or set `VITE_API_KEY=YOUR_API_KEY` in your `.env` file.
+- **Request headers retrieval**: If passed in the request headers (`X-API-Key: YOUR_API_KEY`), `fetchGoogleFlights` automatically retrieves it and includes it in the outbound request headers.
+
+### 3. Environment Variables
+To customize backend configuration, create a `.env` file in the project root:
 
 ```env
 VITE_API_BASE_URL=https://gcrawlai.com/gc/api/v1
+VITE_API_KEY=YOUR_API_KEY
 ```
 
 ---

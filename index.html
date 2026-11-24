@@ -1,8 +1,73 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="notranslate" translate="no">
   <head>
     <meta charset="UTF-8" />
+    <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        // Prevent TransOver / extension custom elements from crashing when accessing shadowRoot.querySelector
+        try {
+          var safeShadow = {
+            querySelector: function() { return null; },
+            querySelectorAll: function() { return []; },
+            getElementById: function() { return null; },
+            childNodes: [],
+            children: []
+          };
+
+          var origDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'shadowRoot');
+          if (origDesc && origDesc.get) {
+            var origGet = origDesc.get;
+            Object.defineProperty(Element.prototype, 'shadowRoot', {
+              configurable: true,
+              enumerable: true,
+              get: function() {
+                var root = origGet.call(this);
+                if (root) return root;
+                if (this.tagName && this.tagName.toLowerCase().indexOf('transover') !== -1) {
+                  return safeShadow;
+                }
+                return null;
+              }
+            });
+          }
+
+          if (typeof customElements !== 'undefined') {
+            ['transover-popup', 'transover-tat-popup'].forEach(function(tag) {
+              try {
+                if (!customElements.get(tag)) {
+                  customElements.define(tag, class extends HTMLElement {
+                    constructor() {
+                      super();
+                      try {
+                        if (!this.shadowRoot) this.attachShadow({ mode: 'open' });
+                      } catch (e) {}
+                    }
+                  });
+                }
+              } catch (e) {}
+            });
+          }
+        } catch (e) {}
+
+        // Global suppression for extension errors
+        window.addEventListener('error', function(e) {
+          var file = e.filename || '';
+          var msg = e.message || '';
+          if (
+            file.indexOf('chrome-extension://') !== -1 ||
+            file.indexOf('contentscript.js') !== -1 ||
+            msg.indexOf('aggiiclaiamajehmlfpkjmlbadmkledi') !== -1 ||
+            msg.indexOf('querySelector') !== -1
+          ) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            return true;
+          }
+        }, true);
+      })();
+    </script>
     <title>Flight Price Intelligence — Real-Time Competitor Airfare Monitoring</title>
     <meta
       name="description"

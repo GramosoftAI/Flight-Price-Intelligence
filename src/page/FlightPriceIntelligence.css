@@ -524,6 +524,20 @@
   border-radius: 10px;
 }
 
+.fpi-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.fpi-results-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
 /* Date Picker */
 .fpi-modern-date-wrapper {
   position: relative;
