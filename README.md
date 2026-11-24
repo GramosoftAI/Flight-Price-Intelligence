@@ -564,8 +564,8 @@ Flight Price Intelligence can support multiple travel and aviation-related busin
 | Resource | Link |
 |---|---|
 | GCrawlAI Website | https://gcrawlai.com |
-| GCrawlAI Console | https://gcrawlai.com |
-| GCrawlAI API Documentation | https://gcrawlai.com |
+| GCrawlAI Console | https://gcrawlai.com/console |
+| GCrawlAI API Documentation | https://gcrawlai.com/docs |
 | FreeAirportDB | https://freeairportdb.com |
 
 ---
